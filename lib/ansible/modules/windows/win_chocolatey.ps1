@@ -191,7 +191,7 @@ Function Choco-Upgrade
         Throw "Error installing $package" 
     }
 
-    if ("$results" -match ' upgraded (\d+)/\d+ package\(s\)\. ')
+    if ("$results" -match ' upgraded (\d+)/\d+ package')
     {
         if ($matches[1] -gt 0)
         {
