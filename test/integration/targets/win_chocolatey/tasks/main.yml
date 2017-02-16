@@ -1,0 +1,62 @@
+---
+
+- name: Remove package
+  win_chocolatey:
+    name: "{{ test_win_chocolatey_package }}"
+    state: absent
+  register: package_removal
+
+- name: Check no changes were made
+  assert:
+    that:
+      - not package_removal.changed
+
+- name: Install initial version of package
+  win_chocolatey:
+    name: "{{ test_win_chocolatey_package }}"
+    state: present
+    version: "{{ test_win_chocolatey_initial_version }}"
+  register: package_initital_installation
+
+- name: Run forced installation
+  win_chocolatey:
+    name: "{{ test_win_chocolatey_package }}"
+    state: present
+    version: "{{ test_win_chocolatey_initial_version }}"
+    force: true
+  register: package_initital_installation_forced
+
+- name: Run installation again to check for idempotency
+  win_chocolatey:
+    name: "{{ test_win_chocolatey_package }}"
+    state: present
+    version: "{{ test_win_chocolatey_initial_version }}"
+  register: package_initital_installation_idemp
+
+- name: Check install and idempotency
+  assert:
+    that:
+      - package_initital_installation.changed
+      - package_initital_installation_forced.changed
+      - not package_initital_installation_idemp.changed
+
+- name: Upgrade package
+  win_chocolatey:
+    name: "{{ test_win_chocolatey_package }}"
+    state: present
+    version: "{{ test_win_chocolatey_upgrade_version }}"
+  register: package_upgrade
+
+- name: Upgrade package
+  win_chocolatey:
+    name: "{{ test_win_chocolatey_package }}"
+    state: present
+    version: "{{ test_win_chocolatey_upgrade_version }}"
+    upgrade: true
+  register: package_upgrade_w_upgrade_opt
+
+- name: Check upgrade occured
+  assert:
+    that:
+      - not package_upgrade.changed
+      - package_upgrade_w_upgrade_opt.changed

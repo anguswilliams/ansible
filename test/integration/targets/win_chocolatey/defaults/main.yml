@@ -1,0 +1,5 @@
+---
+
+test_win_chocolatey_package: 7zip
+test_win_chocolatey_initial_version: 16.04
+test_win_chocolatey_upgrade_version: 16.02
